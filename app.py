@@ -80,7 +80,7 @@ dates_list = [
 ]
 
 
-def display_zones(zones, start_date, end_date, dates_list, highlight = False, dates_list = dates_list):
+def display_zones(zones, start_date, end_date, dates_list, highlight = False):
     dates_list = pd.Series(pd.to_datetime(dates_list)).sort_values()
     dates_list = dates_list[(dates_list >= start_date) & (dates_list <= end_date)]
     print(dates_list)
@@ -225,7 +225,7 @@ app.layout = html.Div([
      Input('highlight-fomc', 'value')]
 )
 def update_graph(start_date, end_date):
-    fig = display_zones(zones, start_date, end_date, highlight='ON' in highlight_fomc, dates_list)
+    fig = display_zones(zones, start_date, end_date, dates_list, highlight='ON' in highlight_fomc)
     df_down = display_df_down(zones, start_date, end_date)
     df_up = display_df_up(zones, start_date, end_date)
 
