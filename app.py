@@ -252,10 +252,18 @@ app.layout = html.Div([
     ]),
     html.Div([
         dcc.Graph(id='graph-container'),
-        # Rest of your layout...
+        html.Div([
+            html.Div([
+                html.H3('Gap Zone Down'),
+                html.Table(id='filtered-down', className='data-table')
+            ], className='data-container', style={'border': '1px solid black', 'margin': '10px'}),
+            html.Div([
+                html.H3('Gap Zone Up'),
+                html.Table(id='filtered-up', className='data-table')
+            ], className='data-container', style={'border': '1px solid black', 'margin': '10px'})
+        ], className='data-tables-container', style={'display': 'flex', 'justifyContent': 'space-around'})
     ])
 ])
-
 
 
 
