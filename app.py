@@ -7,87 +7,124 @@ import plotly.graph_objs as go
 gapzones = pd.read_excel('gapzones.xlsx')
 zones = gapzones.dropna()
 zones = zones.set_index(zones['Date Time'])
-
-dates_list = [
-    'June 14, 2023',
-    'May 3, 2023',
-    'March 22, 2023',
-    'February 1, 2023',
-    'December 14, 2022',
-    'November 2, 2022',
-    'September 21, 2022',
-    'July 27, 2022',
-    'June 15, 2022',
-    'May 4, 2022',
-    'March 16, 2022',
-    'November 5, 2020',
-    'September 16, 2020',
-    'August 27, 2020',
-    'July 29, 2020',
-    'June 10, 2020',
-    'April 29, 2020',
-    'March 31, 2020',
-    'March 23, 2020',
-    'March 19, 2020',
-    'March 15, 2020',
-    'March 3, 2020',
-    'October 30, 2019',
-    'September 18, 2019',
-    'July 31, 2019',
-    'December 19, 2018',
-    'September 26, 2018',
-    'June 13, 2018',
-    'March 21, 2018',
-    'December 13, 2017',
-    'June 14, 2017',
-    'March 15, 2017',
-    'December 14, 2016',
-    'December 16, 2015',
-    'June 22, 2011',
-    'December 16, 2008',
-    'October 29, 2008',
-    'October 8, 2008',
-    'April 30, 2008',
-    'March 18, 2008',
-    'March 16, 2008',
-    'January 30, 2008',
-    'January 22, 2008',
-    'December 11, 2007',
-    'October 31, 2007',
-    'September 18, 2007',
-    'August 17, 2007',
-    'August 7, 2007',
-    'June 28, 2007',
-    'May 9, 2007',
-    'March 21, 2007',
-    'January 31, 2007',
-    'December 12, 2006',
-    'October 25, 2006',
-    'September 20, 2006',
-    'August 8, 2006',
-    'June 29, 2006',
-    'May 10, 2006',
-    'March 28, 2006',
-    'January 31, 2006',
-    'December 13, 2005',
-    'November 1, 2005',
-    'September 20, 2005',
-    'August 9, 2005',
-    'June 30, 2005',
-    'May 3, 2005',
-    'March 22, 2005',
-    'February 2, 2005'
-]
+dates_list = sorted([
+    '2005-02-02',
+    '2005-03-22',
+    '2005-05-03',
+    '2005-06-30',
+    '2005-08-09',
+    '2005-09-20',
+    '2005-11-01',
+    '2005-12-13',
+    '2006-01-31',
+    '2006-03-28',
+    '2006-05-10',
+    '2006-06-29',
+    '2006-08-08',
+    '2006-09-20',
+    '2006-10-25',
+    '2006-12-12',
+    '2007-01-31',
+    '2007-03-21',
+    '2007-05-09',
+    '2007-06-28',
+    '2007-08-07',
+    '2007-09-18',
+    '2007-10-31',
+    '2007-12-11',
+    '2008-01-22',
+    '2008-03-16',
+    '2008-04-30',
+    '2008-05-03',
+    '2008-06-25',
+    '2008-08-05',
+    '2008-09-16',
+    '2008-10-29',
+    '2008-12-16',
+    '2009-01-27',
+    '2009-03-17',
+    '2009-04-28',
+    '2009-06-23',
+    '2009-08-11',
+    '2009-09-22',
+    '2009-11-03',
+    '2009-12-15',
+    '2010-01-26',
+    '2010-03-16',
+    '2010-04-27',
+    '2010-06-22',
+    '2010-08-10',
+    '2010-09-21',
+    '2010-11-02',
+    '2010-12-14',
+    '2011-01-25',
+    '2011-03-15',
+    '2011-04-26',
+    '2011-06-21',
+    '2011-08-09',
+    '2011-09-20',
+    '2011-11-01',
+    '2011-12-13',
+    '2012-01-24',
+    '2012-03-13',
+    '2012-04-24',
+    '2012-06-19',
+    '2012-07-31',
+    '2012-09-12',
+    '2012-10-23',
+    '2012-12-11',
+    '2013-01-29',
+    '2013-03-19',
+    '2013-04-30',
+    '2013-06-18',
+    '2013-07-30',
+    '2013-09-17',
+    '2013-10-29',
+    '2013-12-17',
+    '2014-01-28',
+    '2014-03-18',
+    '2014-04-29',
+    '2014-06-17',
+    '2014-07-29',
+    '2014-09-16',
+    '2014-10-28',
+    '2014-12-16',
+    '2015-01-27',
+    '2015-03-17',
+    '2015-04-28',
+    '2015-06-16',
+    '2015-07-28',
+    '2015-09-16',
+    '2015-10-27',
+    '2015-12-15',
+    '2016-12-14',
+    '2017-03-15',
+    '2017-06-14',
+    '2017-12-13',
+    '2018-03-21',
+    '2018-06-13',
+    '2022-12-14',
+    '2023-02-01',
+    '2023-03-22',
+    '2023-05-03',
+    '2023-06-14'
+])
 
 
 def display_zones(zones, start_date, end_date, dates_list):
-    dates_list = pd.Series(pd.to_datetime(dates_list)).sort_values()
-    dates_list = dates_list[(dates_list >= start_date) & (dates_list <= end_date)]
+    # Convert dates_list to pandas DateTime
+    dates_list = pd.to_datetime(dates_list)
+
+    # Sort dates_list and filter based on start_date and end_date
+    dates_list = dates_list[(dates_list >= start_date) & (dates_list <= end_date)].sort_values()
+
+    # Filter zones based on start_date and end_date
     zones = zones[start_date:end_date]
-    # Convert dates to Timestamp format
+
+    # Convert start_date and end_date to pandas Timestamp
     start_date = pd.Timestamp(start_date)
     end_date = pd.Timestamp(end_date)
-    
+
     # Hardcoded gap dates
     gap_start_date = pd.Timestamp('2018-07-25')
     gap_end_date = pd.Timestamp('2022-12-12')
@@ -98,15 +135,15 @@ def display_zones(zones, start_date, end_date, dates_list):
 
     # Create scatter plots
     scatter_before_gap = go.Scatter(
-        x=before_gap['Date'],
+        x=before_gap['Date Time'],
         y=before_gap['OPEN'],
         mode='lines',
         name='ESH3 Futures',
         line=dict(color='silver')
     )
-    
+
     scatter_after_gap = go.Scatter(
-        x=after_gap['Date'],
+        x=after_gap['Date Time'],
         y=after_gap['OPEN'],
         mode='lines',
         name='ESH3 Futures',
@@ -116,7 +153,7 @@ def display_zones(zones, start_date, end_date, dates_list):
 
     # Add circles where 'Gap Zone Up Filled' or 'Gap Zone Down Filled' are 1
     markers1 = go.Scatter(
-        x=zones.loc[zones['Gap Zone Up Filled'] == 1, 'Date'],
+        x=zones.loc[zones['Gap Zone Up Filled'] == 1, 'Date Time'],
         y=zones.loc[zones['Gap Zone Up Filled'] == 1, 'OPEN'],
         mode='markers',
         name='Gap Zone Up Filled',
@@ -124,7 +161,7 @@ def display_zones(zones, start_date, end_date, dates_list):
     )
 
     markers2 = go.Scatter(
-        x=zones.loc[zones['Gap Zone Down Filled'] == 1, 'Date'],
+        x=zones.loc[zones['Gap Zone Down Filled'] == 1, 'Date Time'],
         y=zones.loc[zones['Gap Zone Down Filled'] == 1, 'OPEN'],
         mode='markers',
         name='Gap Zone Down Filled',
@@ -135,12 +172,26 @@ def display_zones(zones, start_date, end_date, dates_list):
     layout = go.Layout(
         title='Gap Zone Analysis',
         xaxis=dict(title='Date Time'),
-        yaxis=dict(title='Open'),
+        yaxis=dict(title='Open Price'),
+        annotations=[
+            go.layout.Annotation(
+                x=1.02,
+                y=0.5,
+                text='FOMC Meeting',
+                showarrow=False,
+                xref='paper',
+                yref='paper',
+                xanchor='left',
+                yanchor='middle',
+                font=dict(color='red')
+            )
+        ]
     )
-    
+
     # Add red dotted vertical lines at highlight dates
     layout.shapes = [
         go.layout.Shape(
+            name='FOMC Meeting Dates',
             type="line",
             xref="x",
             yref="paper",
