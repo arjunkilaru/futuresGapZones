@@ -80,7 +80,7 @@ dates_list = [
 ]
 
 
-def display_zones(zones, start_date, end_date, dates_list, highlight = False):
+def display_zones(zones, start_date, end_date, dates_list):
     dates_list = pd.Series(pd.to_datetime(dates_list)).sort_values()
     dates_list = dates_list[(dates_list >= start_date) & (dates_list <= end_date)]
     print(dates_list)
@@ -139,30 +139,28 @@ def display_zones(zones, start_date, end_date, dates_list, highlight = False):
         yaxis=dict(title='Open'),
     )
     
-    # Add red dotted vertical lines at highlight dates if highlight is True
-    if highlight and not dates_list.empty:
-        layout.shapes = [
-            go.layout.Shape(
-                type="line",
-                xref="x",
-                yref="paper",
-                x0=date,
-                y0=0,
-                x1=date,
-                y1=1,
-                line=dict(
-                    color="red",
-                    width=1,
-                    dash="dot"
-                )
-            ) for date in dates_list
-        ]
+    # Add red dotted vertical lines at highlight dates
+    layout.shapes = [
+        go.layout.Shape(
+            type="line",
+            xref="x",
+            yref="paper",
+            x0=date,
+            y0=0,
+            x1=date,
+            y1=1,
+            line=dict(
+                color="red",
+                width=1,
+                dash="dot"
+            )
+        ) for date in dates_list
+    ]
 
     # Create figure
     fig = go.Figure(data=[scatter_before_gap, scatter_after_gap, markers1, markers2], layout=layout)
 
     return fig
-
 
 
 
@@ -203,29 +201,24 @@ app.layout = html.Div([
         )
     ]),
     html.Div([
-        dcc.Checkbox(
-            id='highlight-fomc',
-            options=[{'label': 'Add FOMC dates', 'value': 'ON'}],
-            value=[]
-        )
-    ]),
-    html.Div([
         dcc.Graph(id='graph-container'),
         # Rest of your layout...
     ])
 ])
 
-# Modify the callback function
+
+
+
+# Update the callback function
 @app.callback(
     [Output('graph-container', 'figure'),
      Output('filtered-down', 'children'),
      Output('filtered-up', 'children')],
     [Input('start-date-picker', 'date'),
-     Input('end-date-picker', 'date'),
-     Input('highlight-fomc', 'value')]
+     Input('end-date-picker', 'date')]
 )
 def update_graph(start_date, end_date):
-    fig = display_zones(zones, start_date, end_date, dates_list, highlight='ON' in highlight_fomc)
+    fig = display_zones(zones, start_date, end_date, dates_list)
     df_down = display_df_down(zones, start_date, end_date)
     df_up = display_df_up(zones, start_date, end_date)
 
@@ -240,7 +233,6 @@ def update_graph(start_date, end_date):
     ], className='data-table')
 
     return fig, table_down, table_up
-
 
 # Run the app
 if __name__ == '__main__':
