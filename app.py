@@ -83,7 +83,6 @@ dates_list = [
 def display_zones(zones, start_date, end_date, dates_list):
     dates_list = pd.Series(pd.to_datetime(dates_list)).sort_values()
     dates_list = dates_list[(dates_list >= start_date) & (dates_list <= end_date)]
-    print(dates_list)
     zones = zones[start_date:end_date]
     # Convert dates to Timestamp format
     start_date = pd.Timestamp(start_date)
