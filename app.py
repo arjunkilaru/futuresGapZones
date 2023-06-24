@@ -2,6 +2,8 @@ from dash import dcc, html, Dash
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objs as go
+from dash import dcc, html, Dash, Input, Output, dash_table
+from dash.dependencies import Input, Output, State
 
 # Read data and preprocess it
 gapzones = pd.read_excel('gapzones.xlsx')
@@ -118,7 +120,7 @@ dates_list = sorted([
 ])
 
 
-def display_zones(zones, start_date, end_date, dates_list):
+def display_zones(zones, start_date, end_date, dates_list, show_lines):
     # Convert dates_list to pandas DateTime
     dates_list = pd.to_datetime(dates_list)
 
@@ -180,45 +182,34 @@ def display_zones(zones, start_date, end_date, dates_list):
         title='Gap Zone Analysis',
         xaxis=dict(title='Date Time'),
         yaxis=dict(title='Open Price'),
-        annotations=[
-            go.layout.Annotation(
-                x=1.02,
-                y=0.5,
-                text='FOMC Meeting',
-                showarrow=False,
-                xref='paper',
-                yref='paper',
-                xanchor='left',
-                yanchor='middle',
-                font=dict(color='red')
-            )
-        ]
     )
 
     # Add red dotted vertical lines at highlight dates
-    layout.shapes = [
-        go.layout.Shape(
-            name='FOMC Meeting Dates',
-            type="line",
-            xref="x",
-            yref="paper",
-            x0=date,
-            y0=0,
-            x1=date,
-            y1=1,
-            line=dict(
-                color="red",
-                width=1,
-                dash="dot"
-            )
-        ) for date in dates_list
-    ]
+    if show_lines:
+        layout.shapes = [
+            go.layout.Shape(
+                name='FOMC Meeting Dates',
+                type="line",
+                xref="x",
+                yref="paper",
+                x0=date,
+                y0=0,
+                x1=date,
+                y1=1,
+                line=dict(
+                    color="red",
+                    width=1,
+                    dash="dot"
+                )
+            ) for date in dates_list
+        ]
+    else:
+        layout.shapes = []
 
     # Create figure
     fig = go.Figure(data=[scatter_before_gap, scatter_after_gap, markers1, markers2], layout=layout)
 
     return fig
-
 
 
 def display_df_down(zones, start_date, end_date):
@@ -254,7 +245,14 @@ app.layout = html.Div([
         html.Label('End Date:'),
         dcc.DatePickerSingle(
             id='end-date-picker',
-            date='2018-07-25'
+            date='2023-06-24'
+        )
+    ]),
+    html.Div([
+        html.Button(
+            id='toggle-lines',
+            children='View FOMC Meeting Dates',
+            n_clicks=0,
         )
     ]),
     html.Div([
@@ -272,18 +270,17 @@ app.layout = html.Div([
     ])
 ])
 
-
-
-# Update the callback function
 @app.callback(
     [Output('graph-container', 'figure'),
      Output('filtered-down', 'children'),
      Output('filtered-up', 'children')],
     [Input('start-date-picker', 'date'),
-     Input('end-date-picker', 'date')]
+     Input('end-date-picker', 'date'),
+     Input('toggle-lines', 'n_clicks')]  # Changed to 'n_clicks' here
 )
-def update_graph(start_date, end_date):
-    fig = display_zones(zones, start_date, end_date, dates_list)
+def update_graph(start_date, end_date, n_clicks):  # Changed 'show_lines' to 'n_clicks' here
+    show_lines = n_clicks % 2 == 1  # Will be True if 'n_clicks' is odd, False otherwise
+    fig = display_zones(zones, start_date, end_date, dates_list, show_lines)
     df_down = display_df_down(zones, start_date, end_date)
     df_up = display_df_up(zones, start_date, end_date)
 
@@ -299,6 +296,5 @@ def update_graph(start_date, end_date):
 
     return fig, table_down, table_up
 
-# Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
